@@ -1,0 +1,4 @@
+beautifulsoup4>=4.12.2
+python-docx>=0.8.11
+lxml>=4.9.0
+html2docx>=1.6.0
