@@ -101,8 +101,21 @@ def configure_styles(doc):
         font.bold = True
         paragraph_format = chapter_num_style.paragraph_format
         paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph_format.space_before = Pt(36)  # Add spacing before chapter number
         paragraph_format.space_after = Pt(14)
         paragraph_format.keep_with_next = True
+    
+    # Create custom TOCHeading style for Table of Contents heading
+    if 'TOCHeading' not in doc.styles:
+        toc_heading_style = doc.styles.add_style('TOCHeading', 1)  # 1 = paragraph style
+        font = toc_heading_style.font
+        font.name = 'Georgia'
+        font.size = Pt(14)
+        font.bold = True
+        paragraph_format = toc_heading_style.paragraph_format
+        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph_format.space_before = Pt(36)  # Add spacing before TOC heading
+        paragraph_format.space_after = Pt(42)  # Increase spacing after TOC heading
     
     # Create custom ChapterTitle style (instead of Heading 2)
     if 'ChapterTitle' not in doc.styles:
@@ -160,12 +173,11 @@ def create_title_page(doc, book_data):
         doc: docx Document object
         book_data: Dictionary containing book metadata
     """
-    # Set vertical alignment to center for first section
+    # Configure title page section (first section)
     section = doc.sections[0]
-    section_xml = section._sectPr
-    vert_align = OxmlElement('w:vAlign')
-    vert_align.set(qn('w:val'), 'center')
-    section_xml.append(vert_align)
+    
+    # Setup title page section with no headers
+    setup_section_headers(section, "", center_vertical=True, hide_headers=True)
     
     # Add title
     title_paragraph = doc.add_paragraph()
@@ -185,14 +197,10 @@ def create_title_page(doc, book_data):
         author_paragraph.add_run(book_data['author'])
     
     # Add section break for TOC (odd page break ensures TOC starts on a recto page)
-    doc.add_section(WD_SECTION.ODD_PAGE)
+    section = doc.add_section(WD_SECTION.ODD_PAGE)
     
-    # Reset vertical alignment for new section
-    section = doc.sections[1]
-    section_xml = section._sectPr
-    vert_align = OxmlElement('w:vAlign')
-    vert_align.set(qn('w:val'), 'top')
-    section_xml.append(vert_align)
+    # Setup TOC section
+    setup_section_headers(section, "TABLE OF CONTENTS")
 
 
 def to_title_case(text):
@@ -356,9 +364,9 @@ def create_table_of_contents(doc, chapters):
         doc: docx Document object
         chapters: List of chapter dictionaries
     """
-    # Add TOC heading
+    # Add TOC heading with dedicated style
     toc_heading = doc.add_paragraph("TABLE OF CONTENTS")
-    toc_heading.style = 'ChapterNumber'
+    toc_heading.style = 'TOCHeading'
     
     # Add TOC entries
     for chapter in chapters:
@@ -389,13 +397,22 @@ def create_table_of_contents(doc, chapters):
         # Add page reference
         add_page_ref(toc_entry, chapter_bookmark_id)
     
-    # Add a simple page break after TOC to create a blank page
-    # This ensures the first chapter has a blank page before it
-    doc.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
-
-    # Add section break for first chapter (odd page break ensures chapter starts on a recto page)
-    doc.add_section(WD_SECTION.ODD_PAGE)
+    # Create a blank verso page before first chapter
+    # First add an even page section break (this will be the blank verso page)
+    section = doc.add_section(WD_SECTION.EVEN_PAGE)
     
+    # Setup headers for blank verso page - use first chapter's title
+    if chapters:
+        first_chapter_title = to_title_case(chapters[0]['title'])
+        setup_section_headers(section, first_chapter_title)
+    
+    # Add section break for first chapter (odd page break ensures chapter starts on a recto page)
+    section = doc.add_section(WD_SECTION.ODD_PAGE)
+    
+    # Setup headers for first chapter
+    if chapters:
+        first_chapter_title = to_title_case(chapters[0]['title'])
+        setup_section_headers(section, first_chapter_title)
 
 def add_page_number_field(paragraph):
     """
@@ -419,32 +436,61 @@ def add_page_number_field(paragraph):
     r.append(fldChar)
 
 
-def setup_section_headers(section, chapter_title):
+def setup_section_headers(section, chapter_title, center_vertical=False, hide_headers=False):
     """
-    Set up both odd and even headers for a section.
+    Configure a section with proper margins, page size, and headers.
     
     Args:
         section: Section object
         chapter_title: Title of the chapter for this section
+        center_vertical: Whether to center content vertically (default: False)
+        hide_headers: Whether to completely hide headers (default: False)
     """
-    # Make sure the section has different first page header
+    # Configure section margins and page size
+    section.top_margin = Inches(1.0)
+    section.bottom_margin = Inches(1.0)
+    section.left_margin = Inches(1.0)  # Inside margin when mirrored
+    section.right_margin = Inches(0.75)  # Outside margin when mirrored
+    section.header_distance = Inches(0.5)
     section.different_first_page_header_footer = True
+    section.odd_and_even_pages_header_footer = True
+    section.page_width = Inches(6)
+    section.page_height = Inches(9)
+    
+    # Set up mirrored margins
+    section_xml = section._sectPr
+    mirror_margins = OxmlElement('w:mirrorMargins')
+    section_xml.append(mirror_margins)
+    
+    # Set vertical alignment if requested
+    if center_vertical:
+        vert_align = OxmlElement('w:vAlign')
+        vert_align.set(qn('w:val'), 'center')
+        section_xml.append(vert_align)
+    else:
+        # Ensure top alignment for non-title pages
+        vert_align = OxmlElement('w:vAlign')
+        vert_align.set(qn('w:val'), 'top')
+        section_xml.append(vert_align)
     
     # Unlink headers from previous section
     section.header.is_linked_to_previous = False
     section.first_page_header.is_linked_to_previous = False
     section.even_page_header.is_linked_to_previous = False
     
+    # Clear all headers
+    headers = [section.first_page_header, section.header, section.even_page_header]
+    for header in headers:
+        for paragraph in header.paragraphs:
+            p = paragraph._p
+            p.getparent().remove(p)
+    
+    # If headers should be hidden, return after clearing
+    if hide_headers:
+        return
+    
     # Set up first page header - only page number, no chapter title
-    first_header = section.first_page_header
-    
-    # Clear any existing content
-    for paragraph in first_header.paragraphs:
-        p = paragraph._p
-        p.getparent().remove(p)
-    
-    # Add new paragraph for first page header
-    first_para = first_header.add_paragraph()
+    first_para = section.first_page_header.add_paragraph()
     first_para.style = 'PageHeader'
     
     # Check if this is an even or odd section to determine alignment
@@ -458,15 +504,7 @@ def setup_section_headers(section, chapter_title):
     add_page_number_field(first_para)
     
     # Set up odd (recto) header - right-aligned chapter name with page number
-    odd_header = section.header
-    
-    # Clear any existing content
-    for paragraph in odd_header.paragraphs:
-        p = paragraph._p
-        p.getparent().remove(p)
-    
-    # Add new paragraph for odd header
-    odd_para = odd_header.add_paragraph()
+    odd_para = section.header.add_paragraph()
     odd_para.style = 'PageHeader'
     odd_para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     
@@ -480,15 +518,7 @@ def setup_section_headers(section, chapter_title):
     add_page_number_field(odd_para)
     
     # Set up even (verso) header - left-aligned chapter name with page number
-    even_header = section.even_page_header
-    
-    # Clear any existing content
-    for paragraph in even_header.paragraphs:
-        p = paragraph._p
-        p.getparent().remove(p)
-    
-    # Add new paragraph for even header
-    even_para = even_header.add_paragraph()
+    even_para = section.even_page_header.add_paragraph()
     even_para.style = 'PageHeader'
     even_para.alignment = WD_ALIGN_PARAGRAPH.LEFT
     
@@ -536,73 +566,20 @@ def process_chapters(doc, chapters):
         
         # Add section break for next chapter (if not the last chapter)
         if i < len(chapters) - 1:
-            # First add an even page section break
+            # Get the next chapter's title for headers
+            next_chapter_title = to_title_case(chapters[i+1]['title'])
+            
+            # First add an even page section break (blank verso page)
             section = doc.add_section(WD_SECTION.EVEN_PAGE)
             
-            # Configure the even section
-            section.top_margin = Inches(1.0)
-            section.bottom_margin = Inches(1.0)
-            section.left_margin = Inches(1.0)
-            section.right_margin = Inches(0.75)
-            section.header_distance = Inches(0.5)
-            section.different_first_page_header_footer = True
-            section.page_width = Inches(6)
-            section.page_height = Inches(9)
-            
-            # Set up mirrored margins
-            section_xml = section._sectPr
-            mirror_margins = OxmlElement('w:mirrorMargins')
-            section_xml.append(mirror_margins)
+            # Setup headers for blank verso page with NEXT chapter's title
+            setup_section_headers(section, next_chapter_title)
             
             # Then add an odd page section break (instead of a page break)
             section = doc.add_section(WD_SECTION.ODD_PAGE)
             
-            # Configure the odd section
-            section.top_margin = Inches(1.0)
-            section.bottom_margin = Inches(1.0)
-            section.left_margin = Inches(1.0)
-            section.right_margin = Inches(0.75)
-            section.header_distance = Inches(0.5)
-            section.different_first_page_header_footer = True
-            section.page_width = Inches(6)
-            section.page_height = Inches(9)
-            
-            # Set up mirrored margins
-            section_xml = section._sectPr
-            mirror_margins = OxmlElement('w:mirrorMargins')
-            section_xml.append(mirror_margins)
-
-
-def setup_headers(doc, chapters):
-    """
-    Configure headers with chapter names and page numbers.
-    
-    Args:
-        doc: docx Document object
-        chapters: List of chapter dictionaries
-    """
-    # Skip the first section (title page)
-    # Second section is TOC
-    # Remaining sections are chapters
-    
-    # Setup TOC header (section 1)
-    section = doc.sections[1]
-    setup_section_headers(section, "TABLE OF CONTENTS")
-    
-    # No need to setup header for blank page as it's not a separate section
-    
-    # Add headers for each chapter section
-    for i, section in enumerate(doc.sections[2:], 2):
-        # Get chapter index (i-2 because we're starting from the third section)
-        chapter_idx = i - 2
-        
-        if chapter_idx < len(chapters):
-            chapter = chapters[chapter_idx]
-            # Convert chapter title to Title Case for headers
-            chapter_title = to_title_case(chapter['title'])
-            
-            # Set up headers for this section
-            setup_section_headers(section, chapter_title)
+            # Setup headers for chapter content with NEXT chapter's title
+            setup_section_headers(section, next_chapter_title)
 
 
 def process_document(input_file, output_file):
@@ -629,9 +606,6 @@ def process_document(input_file, output_file):
     
     # Process chapters
     process_chapters(doc, data['chapters'])
-    
-    # Setup headers
-    setup_headers(doc, data['chapters'])
     
     # Save the document
     doc.save(output_file)

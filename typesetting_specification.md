@@ -44,11 +44,12 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 
 ### Table of Contents
 
-#### `ChapterNumber` (custom)
+#### `TOCHeading` (custom)
 - **Use**: "TABLE OF CONTENTS" heading
 - **Font**: Georgia, 14 pt, Bold, All Caps
 - **Alignment**: Centered
-- **Spacing After**: 24 pt
+- **Spacing Before**: 36 pt
+- **Spacing After**: 42 pt
 
 #### `TOC Entry` (custom)
 - **Use**: Chapter listings
@@ -73,6 +74,7 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 - **Use**: Chapter number (e.g. "CHAPTER V")
 - **Font**: Georgia, 14 pt, Bold, All Caps
 - **Alignment**: Centered
+- **Spacing Before**: 36 pt
 - **Spacing After**: 14 pt
 - **Keep with Next**: Enabled
 
