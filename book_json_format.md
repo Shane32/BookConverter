@@ -1,0 +1,54 @@
+# Book JSON Format Documentation
+
+This document describes the JSON format designed to store the content of "Only an Irish Boy; Or, Andy Burke's Fortunes" by Horatio Alger, Jr.
+
+## JSON Structure
+
+```json
+{
+  "book": {
+    "title": "Only an Irish Boy",
+    "subtitle": "Or, Andy Burke's Fortunes",
+    "author": "Horatio Alger, Jr."
+  },
+  "chapters": [
+    {
+      "number": 1,
+      "title": "Andy Burke",
+      "paragraphs": [
+        "John, saddle my horse, and bring him around to the door.",
+        "The speaker was a boy of fifteen, handsomely dressed, and, to judge from his air and tone, a person of considerable consequence, in his own opinion, at least. The person addressed was employed in the stable of his father, Colonel Anthony Preston, and so inferior in social condition that Master Godfrey always addressed him in imperious tones.",
+        "John looked up and answered, respectfully:",
+        // Additional paragraphs...
+      ]
+    },
+    {
+      "number": 2,
+      "title": "A Skirmish",
+      "paragraphs": [
+        "Andy Burke was not the boy to run away from an opponent of his own size and age. Neither did he propose to submit quietly to the thrashing which Godfrey designed to give him. He dropped his stick and bundle, and squared off scientifically at his aristocratic foe.",
+        // Additional paragraphs...
+      ]
+    },
+    // Additional chapters...
+  ]
+}
+```
+
+## Structure Explanation
+
+1. **Book Metadata**
+   - `title`: The main title of the book
+   - `subtitle`: The subtitle of the book
+   - `author`: The author's name
+
+2. **Chapters Array**
+   - Each chapter is an object containing:
+     - `number`: The chapter number (integer)
+     - `title`: The chapter title (string)
+     - `paragraphs`: An array of strings, each representing a paragraph of text
+
+3. **Paragraphs**
+   - Each paragraph is stored as a plain text string
+   - All HTML formatting is removed
+   - Original paragraph breaks are preserved
