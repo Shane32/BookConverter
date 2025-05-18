@@ -134,7 +134,6 @@ def configure_styles(doc):
         font = subtitle_style.font
         font.name = 'Georgia'
         font.size = Pt(12)
-        font.italic = True
         paragraph_format = subtitle_style.paragraph_format
         paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
         paragraph_format.space_after = Pt(36)
@@ -225,11 +224,11 @@ def create_title_page(doc, book_data):
         subtitle_paragraph.style = 'BookSubtitle'
         subtitle_paragraph.add_run(book_data['subtitle'])
     
-    # Add author
+    # Add author with "by" prefix
     if 'author' in book_data and book_data['author']:
         author_paragraph = doc.add_paragraph()
         author_paragraph.style = 'BookSubtitle'
-        author_paragraph.add_run(book_data['author'])
+        author_paragraph.add_run(f"by {book_data['author']}")
     
 
 def create_dedication_page(doc, dedication_data):

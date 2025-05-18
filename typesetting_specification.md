@@ -1,6 +1,6 @@
-# Typesetting Specification for *Only an Irish Boy*
+# Typesetting Specification for Only an Irish Boy
 
-A complete style and layout reference for Microsoft Word typesetting of the novel *Only an Irish Boy* on 6" × 9" trim size.
+A complete style and layout reference for Microsoft Word typesetting of the novel Only an Irish Boy on 6" × 9" trim size.
 
 ---
 
@@ -36,8 +36,8 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 - **Vertical Alignment**: Centered on page
 
 #### `BookSubtitle` (custom)
-- **Use**: Author name
-- **Font**: Georgia, 12 pt, Italic
+- **Use**: Author name with "by" prefix
+- **Font**: Georgia, 12 pt
 - **Alignment**: Centered
 - **Spacing After**: 36 pt
 
