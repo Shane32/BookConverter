@@ -56,13 +56,14 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 - **Font**: Book Antiqua, 10 pt
 - **Line Spacing**: 1.15
 - **Spacing After**: 6 pt
+- **Paragraph Indent**: 0.25"
 - **Tabs**:
-  - Left-aligned tab at **1.125"**
-  - Right-aligned tab at **4.25"** with **dot leader**
+  - Left-aligned tab at **0.81"**
+  - Right-aligned tab at **4.0"** with **dot leader**
 - **Example Format**:
   ```
-  Chapter I<TAB>The New Home<TAB>1
-  Chapter II<TAB>A Friendly Call<TAB>7
+  I.<TAB>The New Home<TAB>1
+  II.<TAB>A Friendly Call<TAB>7
   ```
 - **Note**: The Table of Contents should end with a blank page
 

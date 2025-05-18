@@ -149,9 +149,12 @@ def configure_styles(doc):
         paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
         paragraph_format.line_spacing = 1.15
         paragraph_format.space_after = Pt(6)
+        # Add paragraph indent
+        paragraph_format.first_line_indent = Inches(0.25)
+        
         # Add tab stops
-        paragraph_format.tab_stops.add_tab_stop(Inches(1.125), WD_ALIGN_PARAGRAPH.LEFT)
-        paragraph_format.tab_stops.add_tab_stop(Inches(4.25), WD_ALIGN_PARAGRAPH.RIGHT, WD_TAB_LEADER.DOTS)
+        paragraph_format.tab_stops.add_tab_stop(Inches(0.81), WD_ALIGN_PARAGRAPH.LEFT)
+        paragraph_format.tab_stops.add_tab_stop(Inches(4.0), WD_ALIGN_PARAGRAPH.RIGHT, WD_TAB_LEADER.DOTS)
     
     # Create PageHeader style
     if 'PageHeader' not in doc.styles:
@@ -382,8 +385,8 @@ def create_table_of_contents(doc, chapters):
         chapter_num = roman_numeral(chapter['number'])
         title_text = to_title_case(chapter['title'])
         
-        # Add "Chapter I" part
-        toc_entry.add_run(f"Chapter {chapter_num}")
+        # Add "I." part (Roman numeral with period)
+        toc_entry.add_run(f"{chapter_num}.")
         
         # Add tab
         toc_entry.add_run("\t")
