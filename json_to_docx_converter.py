@@ -177,7 +177,7 @@ def create_title_page(doc, book_data):
     section = doc.sections[0]
     
     # Setup title page section with no headers
-    setup_section_headers(section, "", center_vertical=True, hide_headers=True)
+    setup_section_headers(section, "", center_vertical=True, hide_headers=True, reset_numbering=False)
     
     # Add title
     title_paragraph = doc.add_paragraph()
@@ -199,8 +199,8 @@ def create_title_page(doc, book_data):
     # Add section break for TOC (odd page break ensures TOC starts on a recto page)
     section = doc.add_section(WD_SECTION.ODD_PAGE)
     
-    # Setup TOC section
-    setup_section_headers(section, "TABLE OF CONTENTS")
+    # Setup TOC section with hidden headers
+    setup_section_headers(section, "TABLE OF CONTENTS", hide_headers=True, reset_numbering=False)
 
 
 def to_title_case(text):
@@ -404,15 +404,15 @@ def create_table_of_contents(doc, chapters):
     # Setup headers for blank verso page - use first chapter's title
     if chapters:
         first_chapter_title = to_title_case(chapters[0]['title'])
-        setup_section_headers(section, first_chapter_title)
+        setup_section_headers(section, first_chapter_title, hide_headers=True, reset_numbering=False)
     
     # Add section break for first chapter (odd page break ensures chapter starts on a recto page)
     section = doc.add_section(WD_SECTION.ODD_PAGE)
     
-    # Setup headers for first chapter
+    # Setup headers for first chapter with page numbering reset to 1
     if chapters:
         first_chapter_title = to_title_case(chapters[0]['title'])
-        setup_section_headers(section, first_chapter_title)
+        setup_section_headers(section, first_chapter_title, reset_numbering=True)
 
 def add_page_number_field(paragraph):
     """
@@ -436,7 +436,7 @@ def add_page_number_field(paragraph):
     r.append(fldChar)
 
 
-def setup_section_headers(section, chapter_title, center_vertical=False, hide_headers=False):
+def setup_section_headers(section, chapter_title, center_vertical=False, hide_headers=False, reset_numbering=False):
     """
     Configure a section with proper margins, page size, and headers.
     
@@ -445,6 +445,7 @@ def setup_section_headers(section, chapter_title, center_vertical=False, hide_he
         chapter_title: Title of the chapter for this section
         center_vertical: Whether to center content vertically (default: False)
         hide_headers: Whether to completely hide headers (default: False)
+        reset_numbering: Whether to reset page numbering to 1 and omit even page header (default: False)
     """
     # Configure section margins and page size
     section.top_margin = Inches(1.0)
@@ -472,6 +473,20 @@ def setup_section_headers(section, chapter_title, center_vertical=False, hide_he
         vert_align = OxmlElement('w:vAlign')
         vert_align.set(qn('w:val'), 'top')
         section_xml.append(vert_align)
+    
+    # Handle page numbering
+    if reset_numbering:
+        # Reset page numbering to start at 1
+        pg_num_type = OxmlElement('w:pgNumType')
+        pg_num_type.set(qn('w:start'), '1')
+        section_xml.append(pg_num_type)
+    else:
+        # For continuing numbering, actively remove any pgNumType element if it exists
+        # This prevents Word from automatically duplicating it from other sections
+        pg_num_types = section_xml.findall(qn('w:pgNumType'))
+        if pg_num_types:
+            for pg_num_type in pg_num_types:
+                section_xml.remove(pg_num_type)
     
     # Unlink headers from previous section
     section.header.is_linked_to_previous = False
@@ -573,13 +588,13 @@ def process_chapters(doc, chapters):
             section = doc.add_section(WD_SECTION.EVEN_PAGE)
             
             # Setup headers for blank verso page with NEXT chapter's title
-            setup_section_headers(section, next_chapter_title)
+            setup_section_headers(section, next_chapter_title, reset_numbering=False)
             
             # Then add an odd page section break (instead of a page break)
             section = doc.add_section(WD_SECTION.ODD_PAGE)
             
             # Setup headers for chapter content with NEXT chapter's title
-            setup_section_headers(section, next_chapter_title)
+            setup_section_headers(section, next_chapter_title, reset_numbering=False)
 
 
 def process_document(input_file, output_file):
