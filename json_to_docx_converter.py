@@ -400,22 +400,7 @@ def create_table_of_contents(doc, chapters):
         # Add page reference
         add_page_ref(toc_entry, chapter_bookmark_id)
     
-    # Create a blank verso page before first chapter
-    # First add an even page section break (this will be the blank verso page)
-    section = doc.add_section(WD_SECTION.EVEN_PAGE)
-    
-    # Setup headers for blank verso page - use first chapter's title
-    if chapters:
-        first_chapter_title = to_title_case(chapters[0]['title'])
-        setup_section_headers(section, first_chapter_title, hide_headers=True, reset_numbering=False)
-    
-    # Add section break for first chapter (odd page break ensures chapter starts on a recto page)
-    section = doc.add_section(WD_SECTION.ODD_PAGE)
-    
-    # Setup headers for first chapter with page numbering reset to 1
-    if chapters:
-        first_chapter_title = to_title_case(chapters[0]['title'])
-        setup_section_headers(section, first_chapter_title, reset_numbering=True)
+    # No section breaks added here - they will be added in process_chapters
 
 def add_page_number_field(paragraph):
     """
@@ -559,6 +544,27 @@ def process_chapters(doc, chapters):
         chapters: List of chapter dictionaries
     """
     for i, chapter in enumerate(chapters):
+        # Get the current chapter's title
+        chapter_title = to_title_case(chapter['title'])
+        
+        # Determine if this is the first page (for reset_numbering)
+        first_page = (i == 0)
+        
+        # Create section breaks before chapter content
+        # First add an even page section break (blank verso page)
+        section = doc.add_section(WD_SECTION.EVEN_PAGE)
+        
+        # Setup headers for blank verso page
+        setup_section_headers(section, chapter_title,
+                             hide_headers=first_page)
+        
+        # Then add an odd page section break for the chapter content
+        section = doc.add_section(WD_SECTION.ODD_PAGE)
+        
+        # Setup headers for chapter content
+        setup_section_headers(section, chapter_title,
+                             reset_numbering=first_page)
+        
         # Create bookmark ID for the chapter
         chapter_bookmark_id = f"chapter_{chapter['number']}"
         
@@ -570,34 +576,15 @@ def process_chapters(doc, chapters):
         # Add bookmark for TOC reference
         add_bookmark(chapter_num_para, chapter_bookmark_id)
         
-        # Add chapter title (convert to Title Case from uppercase)
+        # Add chapter title
         chapter_title_para = doc.add_paragraph()
         chapter_title_para.style = 'ChapterTitle'
-        # Convert from ALL CAPS to Title Case
-        title_text = to_title_case(chapter['title'])
-        chapter_title_para.add_run(title_text)
+        chapter_title_para.add_run(chapter_title)
         
         # Process paragraphs
         for paragraph_text in chapter['paragraphs']:
             para = doc.add_paragraph(paragraph_text)
             para.style = 'Normal'
-        
-        # Add section break for next chapter (if not the last chapter)
-        if i < len(chapters) - 1:
-            # Get the next chapter's title for headers
-            next_chapter_title = to_title_case(chapters[i+1]['title'])
-            
-            # First add an even page section break (blank verso page)
-            section = doc.add_section(WD_SECTION.EVEN_PAGE)
-            
-            # Setup headers for blank verso page with NEXT chapter's title
-            setup_section_headers(section, next_chapter_title, reset_numbering=False)
-            
-            # Then add an odd page section break (instead of a page break)
-            section = doc.add_section(WD_SECTION.ODD_PAGE)
-            
-            # Setup headers for chapter content with NEXT chapter's title
-            setup_section_headers(section, next_chapter_title, reset_numbering=False)
 
 
 def process_document(input_file, output_file):
