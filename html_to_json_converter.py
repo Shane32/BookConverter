@@ -147,26 +147,22 @@ def has_text_content(element):
 
 def validate_element_in_strict_mode(element):
     """
-    Validate element in strict mode - only <h2> and <p> tags should contain text.
+    Validate element in strict mode - ensure it contains no child elements other than text.
     
     Args:
         element: BeautifulSoup element
         
     Raises:
-        ValueError: If an unrecognized tag contains text
+        ValueError: If the element contains any non-text child elements
     """
     # Skip NavigableString objects
     if isinstance(element, NavigableString):
         return
     
-    # If element has text and is not h2 or p, raise error
-    if element.name not in ['h2', 'p'] and has_text_content(element):
-        raise ValueError(f"Unrecognized tag <{element.name}> contains text: {element.get_text(strip=True)[:30]}...")
-    
-    # Recursively check all children
+    # Check all children - only allow text nodes (NavigableString)
     for child in element.children:
         if not isinstance(child, NavigableString):
-            validate_element_in_strict_mode(child)
+            raise ValueError(f"Unrecognized element <{child.name}> found inside <{element.name}>")
 
 def convert_html_to_json(html_file, json_file):
     """
@@ -261,7 +257,27 @@ def convert_html_to_json(html_file, json_file):
                 if current_element.name == 'h2' and re.search(r'CHAPTER\s+[IVXLCDM]+', current_element.get_text(strip=True), re.IGNORECASE):
                     break
                 
-                # If it's a paragraph with content, add it
+                # In strict mode, reject any unrecognized element that contains text
+                if strict_mode and current_element.name and current_element.name not in ['p', 'pre']:
+                    # Special case: Allow <h3> with "THE END" at the end of the book
+                    if current_element.name == 'h3' and current_element.get_text(strip=True) == "THE END":
+                        print("Found 'THE END' marker, skipping...")
+                        current_element = current_element.next_sibling
+                        continue
+                    
+                    # Special case: Skip Project Gutenberg footer section
+                    if current_element.name == 'section' and "END OF THE PROJECT GUTENBERG" in current_element.get_text(strip=True):
+                        print("Found Project Gutenberg footer, skipping...")
+                        current_element = current_element.next_sibling
+                        continue
+                    
+                    # Check if it contains any readable text
+                    if has_text_content(current_element):
+                        error_msg = f"Unrecognized element <{current_element.name}> contains text: {current_element.get_text(strip=True)[:30]}..."
+                        print(f"Error in strict mode: {error_msg}")
+                        raise ValueError(error_msg)
+                
+                # If it's a paragraph with content, add it as a string
                 if current_element.name == 'p' and has_text_content(current_element):
                     # In strict mode, validate that only allowed tags contain text
                     if strict_mode:
@@ -275,6 +291,24 @@ def convert_html_to_json(html_file, json_file):
                     paragraph_text = current_element.get_text()
                     paragraph_text = normalize_html_whitespace(paragraph_text)
                     paragraphs.append(paragraph_text)
+                
+                # If it's a pre element with content, add it as an object
+                elif current_element.name == 'pre' and has_text_content(current_element):
+                    # In strict mode, validate that only allowed tags contain text
+                    if strict_mode:
+                        try:
+                            validate_element_in_strict_mode(current_element)
+                        except ValueError as e:
+                            print(f"Error in strict mode: {e}")
+                            raise
+                    
+                    # Add pre text as a quote object with normalized whitespace
+                    quote_text = current_element.get_text()
+                    quote_text = normalize_html_whitespace(quote_text)
+                    paragraphs.append({
+                        "type": "quote",
+                        "content": quote_text
+                    })
                 
                 # Move to next element
                 current_element = current_element.next_sibling

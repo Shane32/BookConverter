@@ -1150,6 +1150,10 @@
         "\"Very well,\" said the teacher, taking it gravely.",
         "As it was not quite time to summon the pupils, he opened it at once.",
         "This was what he read:",
+        {
+          "type": "quote",
+          "content": "\"MR. STONE: Sir—My son Godfrey informs me that you have treated him in a very unjust manner, for which I find it impossible to account. I shall be glad if you can find time to call at my house this evening, in order that I may hear from your lips an explanation of the occurrence. Yours, in haste, \"Lucinda Preston.\""
+        },
         "\"Preston,\" said Mr. Stone, after reading this note, \"you may say to your mother that I will call this evening.\"",
         "He did not appear in the least disturbed by the contents of the note he had received from the richest and—in her own eyes—the most important lady in the village. In fact, he had a large share of self-respect and independence, and was not likely to submit to browbeating from anyone. He tried to be just in his treatment of the scholars under his charge, and if he ever failed, it was from misunderstanding or ignorance, not from design. In the present instance he felt that he had done right, and resolved to maintain the justice of his conduct.",
         "Nothing of importance occurred in the afternoon. Godfrey was very quiet and orderly. He felt that he could afford to wait. With malicious joy, he looked forward to the scolding Mr. Stone was to get from his mother.",
@@ -1798,9 +1802,17 @@
         "\"I will write to her at once.\"",
         "\"Thank you.\"",
         "The following letter was dispatched to Mrs. Preston:",
+        {
+          "type": "quote",
+          "content": "\"MRS. PRESTON:— \"Dear Madam: It gives me great pleasure to inform you that your husband is so far recovered that there is no danger now of infection. You can return with safety, and he will, doubtless, be glad to see you. He has been very ill, indeed—in danger of his life; but, thanks to the devotion of Mrs. Burke, who has proved an admirable nurse, he is now on the high road to recovery. Yours respectfully, \"John Townley.\""
+        },
         "\"I think that will bring her,\" said the doctor.",
         "But he reckoned without his host.",
         "The next day he received the following letter, on scented paper:",
+        {
+          "type": "quote",
+          "content": "\"MY DEAR DOCTOR TOWNLEY: You cannot think how rejoiced I am to receive the tidings of my husband's convalescence. I have been so tortured with anxiety during the last four weeks! You cannot think how wretchedly anxious I have been. I could not have endured to stay away from his bedside but that my duty imperatively required it. I have lost flesh, and my anxiety has worn upon me. Now, how gladly will I resume my place at the bedside of my husband, restored by your skill. I am glad the nurse has proved faithful. It was a good chance for her, for she shall be liberally paid, and no doubt the money will be welcome. But don't you think it might be more prudent for me to defer my return until next week? It will be safer, I think, and I owe it to my boy to be very careful. You know, the contagion may still exist. It is hard for me to remain longer away, when I would fain fly to the bedside of Mr. Preston, but I feel that it is best. Say to him, with my love, that he may expect me next week. Accept my thanks for your attention to him. I shall never forget it; and believe me to be, my dear doctor, your obliged \"Lucinda Preston.\""
+        },
         "Dr. Townley threw down this letter with deep disgust.",
         "\"Was ever any woman more disgustingly selfish?\" he exclaimed. \"Her husband might have died, so far as she was concerned.\"",
         "Of course, he had to show this letter to Colonel Preston.",
@@ -2297,8 +2309,20 @@
         "\"Of course, all ought to come to me and Godfrey,\" she soliloquized. \"I don't think it is right to leave money to charitable institutions as long as a wife and child are living. Fortunately, my husband had no brothers or sisters, or perhaps he would have divided the property. If there is no will, I shall have my thirds, and shall have the control of Godfrey's property till he comes of age. I think I will go to Boston to live. My friend, Mrs. Boynton, has a very pleasant house on Worcester Street. I should like to settle down somewhere near her. I don't know how much Mr. Preston was worth, but I am sure we shall have enough for that. I always wanted to live in the city. This village is intolerably stupid, and so are the people. I shall be glad to get away.\"",
         "Could the good women, whose kind hearts had prompted them to proffer their sympathy, have heard these words they would not have been likely to obtrude any more on the hard, cold woman who held them in such low estimation.",
         "Mrs. Preston took the lamp in her hand, and began to explore her husband's desk. She had often thought of doing so, but, as his death was not supposed to be so near, she had not thought that there was any immediate cause of doing so. Besides, it had almost been her belief that he had made no will. Now she began to open drawers and untie parcels of papers, but it was some time before she came to what she sought. At length, however, her diligence was rewarded. In the middle of a pile of papers, she found one labeled on the outside:",
+        {
+          "type": "quote",
+          "content": "MY WILL."
+        },
         "Her heart beat as she opened it, and, though there was no need, for it was now past ten o'clock, and there was not likely to be a caller at that late hour, she looked cautiously about her, and even peered out of the window into the darkness, but could find no one whose observation she might fear.",
         "I am not about to recite at length the items in the will, which covered a page of foolscap. It is enough to quote two items, which Mrs. Preston read with anger and dissatisfaction. They are as follows:",
+        {
+          "type": "quote",
+          "content": "\"Item.—To my young friend, Andy Burke, son of the widow Burke, of this village, in consideration of a valuable service rendered to me on one occasion, and as a mark of my regard and interest, I give and bequeath the sum of five thousand dollars; and to his mother, as a token of gratitude for her faithful nursing when I was dangerously sick with the smallpox, I give and bequeath, free of all incumbrance, the cottage in which she at present resides."
+        },
+        {
+          "type": "quote",
+          "content": "\"Item.—To the town I give five thousand dollars, the interest to be annually appropriated to the purchase of books for a public library, for the benefit of all the citizens, provided the town will provide some suitable place in which to keep them.\""
+        },
         "All the balance of the property was left to his wife and son, in equal proportions, his wife to be the guardian of Godfrey till he should have attained his majority. As Colonel Preston was well known to be rich, this seemed to be an adequate provision, but Mrs. Preston did not look upon it in that light. On the contrary, she was deeply incensed at the two legacies of which mention has been made above.",
         "\"Was ever anything more absurd than to waste five thousand dollars and a house upon that Irish boy and his mother?\" she said to herself. \"I don't suppose it was so much my husband's fault. That artful woman got around him, and wheedled him into it. I know now why she was so willing to come here and take care of him when he was sick. She wanted to wheedle him into leaving money to her low-lived boy. She is an artful and designing hussy, and I should like to tell her so to her face.\"",
         "The cold and usually impassible woman was deeply excited. Her selfish nature made her grudge any of her husband's estate to others, except, indeed, to Godfrey, who was the only person she cared for. As she thought over the unjust disposition, as she regarded it, which her husband had made of his property, a red spot glowed in her usually pale cheek.",
@@ -2610,6 +2634,10 @@
         "\"I should think not.\"",
         "The next day, Dr. Townley, immediately after breakfast, drew the envelope already referred to from among his private papers, and, breaking the seal, opened it.",
         "To his surprise and excitement, he discovered that the inclosure was the last will and testament of his deceased friend. Accompanying it was the following note:",
+        {
+          "type": "quote",
+          "content": "\"MY DEAR FRIEND, DR. TOWNLEY: This is the duplicate of a will executed recently, and expresses my well-considered wishes as to the disposition of my property. The original will may have been found and executed before you open this envelope. In that case, of course, this will be of no value, and you can destroy it. But I am aware that valuable papers are liable to loss or injury, and, therefore, I deem it prudent to place this duplicate in your possession, that, if the other be lost, you may see it carried into execution. I have named you my executor, and am sure, out of regard to me, you will accept the trust, and fulfill it to the best of your ability. I have always felt the utmost confidence in your friendship, and this will account for my troubling you on the present occasion. \"Your friend, \"Anthony Preston.\""
+        },
         "From this letter Dr. Townley turned to the perusal of the will. The contents filled him with equal surprise and pleasure.",
         "\"Five thousand dollars to Andy Burke!\" he repeated. \"That is capital! It will start the boy in life, and with his good habits it will make him sure of a competence by and by. With half of it he can buy an interest in Graves' store, and the balance will, if well invested, give him a handsome addition to his income. Then there's the bequest for the town library—a capital idea, that! It will do a great deal to make the town attractive, and be a powerful agency for refining and educating the people.\"",
         "Just then Mrs. Townley, who knew what her husband was about, came into the room.",
@@ -2744,6 +2772,10 @@
         "\"Now,\" continued the doctor, \"I'll tell you what plan I have for you. Mr. Graves wants to take a boy into his store who will buy an interest in the business and become his partner. He thinks well of you, and is willing to take you. What do you say?\"",
         "\"I'll do whatever you think best, doctor.\"",
         "\"Then I think this is a good opening for you. Mr. Graves wants to retire from business before long. Probably by the time you are twenty-one he will leave everything in your hands. You will be paid weekly wages and perhaps be entitled to a portion of the profits—more than enough to support you all comfortably. What do you say? Shall we have a new firm in the village?",
+        {
+          "type": "quote",
+          "content": "\"GRAVES & BURKE.\""
+        },
         "Andy's eyes sparkled with proud anticipation. It was so far above any dream he had ever formed.",
         "\"It's what I'd like above all things,\" he said. \"Oh, what will mother say? I must go and tell her.\"",
         "\"Go, by all means, Andy, and when you have told her, come back, and I'll go over with you to Mr. Graves' store, and we'll talk over the arrangements with him.\"",

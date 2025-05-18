@@ -9,7 +9,7 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 ### Page Size and Margins
 - **Trim Size**: 6" × 9"
 - **Top Margin**: 1.0"
-- **Bottom Margin**: 1.0"
+- **Bottom Margin**: 0.75"
 - **Inside (Gutter)**: 1.0"
 - **Outside**: 0.75"
 - **Header Distance from Top**: 0.5"
@@ -122,6 +122,17 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 - **Line Spacing**: 1.15
 - **Spacing After**: 11.5 pt
 - **First Line Indent**: 0.25"
+- **Alignment**: Justified
+- **Hyphenation**: Enabled
+- **Widow/Orphan Control**: Enabled
+
+#### `Quote` (custom)
+- **Use**: Quoted text, letters, or other content requiring double indentation
+- **Font**: Book Antiqua, 10 pt, Italic
+- **Line Spacing**: 1.15
+- **Spacing After**: 11.5 pt
+- **Left Indent**: 0.25"
+- **Right Indent**: 0.25"
 - **Alignment**: Justified
 - **Hyphenation**: Enabled
 - **Widow/Orphan Control**: Enabled

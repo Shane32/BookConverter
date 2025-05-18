@@ -40,23 +40,6 @@ def setup_document():
     """
     doc = Document()
     
-    # Configure sections and margins (mirrored)
-    section = doc.sections[0]
-    section.top_margin = Inches(1.0)
-    section.bottom_margin = Inches(1.0)
-    section.left_margin = Inches(1.0)  # Inside margin when mirrored
-    section.right_margin = Inches(0.75)  # Outside margin when mirrored
-    section.header_distance = Inches(0.5)
-    section.different_first_page_header_footer = True
-    section.odd_and_even_pages_header_footer = True
-    section.page_width = Inches(6)
-    section.page_height = Inches(9)
-    
-    # Set up mirrored margins
-    section_xml = section._sectPr
-    mirror_margins = OxmlElement('w:mirrorMargins')
-    section_xml.append(mirror_margins)
-    
     # Enable different odd and even headers at the document level
     doc.settings.odd_and_even_pages_header_footer = True
     
@@ -70,133 +53,140 @@ def configure_styles(doc):
     Args:
         doc: docx Document object
     """
+
     # Configure normal style (Book Antiqua 10pt, justified, 1.15 spacing, 11.5pt after)
-    style = doc.styles['Normal']
-    font = style.font
+    normal_style = doc.styles['Normal']
+    font = normal_style.font
     font.name = 'Book Antiqua'
     font.size = Pt(10)
-    paragraph_format = style.paragraph_format
+    paragraph_format = normal_style.paragraph_format
     paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
     paragraph_format.line_spacing = 1.15
     paragraph_format.space_after = Pt(11.5)
     paragraph_format.first_line_indent = Inches(0.25)
     
+    # Remove all styles except Normal
+    styles_to_remove = [s for s in doc.styles if s.name != 'Normal']
+    for style in styles_to_remove:
+        style.delete()
+    
+    # 3. Create custom styles
+    
     # Create custom BookTitle style (instead of Title)
-    if 'BookTitle' not in doc.styles:
-        title_style = doc.styles.add_style('BookTitle', 1)  # 1 = paragraph style
-        font = title_style.font
-        font.name = 'Georgia'
-        font.size = Pt(16)
-        font.bold = True
-        paragraph_format = title_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    title_style = doc.styles.add_style('BookTitle', 1)  # 1 = paragraph style
+    font = title_style.font
+    font.name = 'Georgia'
+    font.size = Pt(16)
+    font.bold = True
+    paragraph_format = title_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
     
     # Create custom ChapterNumber style (instead of Heading 1)
-    if 'ChapterNumber' not in doc.styles:
-        chapter_num_style = doc.styles.add_style('ChapterNumber', 1)  # 1 = paragraph style
-        font = chapter_num_style.font
-        font.name = 'Georgia'
-        font.size = Pt(14)
-        font.bold = True
-        paragraph_format = chapter_num_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_before = Pt(36)  # Add spacing before chapter number
-        paragraph_format.space_after = Pt(14)
-        paragraph_format.keep_with_next = True
+    chapter_num_style = doc.styles.add_style('ChapterNumber', 1)  # 1 = paragraph style
+    font = chapter_num_style.font
+    font.name = 'Georgia'
+    font.size = Pt(14)
+    font.bold = True
+    paragraph_format = chapter_num_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_before = Pt(36)  # Add spacing before chapter number
+    paragraph_format.space_after = Pt(14)
+    paragraph_format.keep_with_next = True
     
     # Create custom TOCHeading style for Table of Contents heading
-    if 'TOCHeading' not in doc.styles:
-        toc_heading_style = doc.styles.add_style('TOCHeading', 1)  # 1 = paragraph style
-        font = toc_heading_style.font
-        font.name = 'Georgia'
-        font.size = Pt(14)
-        font.bold = True
-        paragraph_format = toc_heading_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_before = Pt(36)  # Add spacing before TOC heading
-        paragraph_format.space_after = Pt(42)  # Increase spacing after TOC heading
+    toc_heading_style = doc.styles.add_style('TOCHeading', 1)  # 1 = paragraph style
+    font = toc_heading_style.font
+    font.name = 'Georgia'
+    font.size = Pt(14)
+    font.bold = True
+    paragraph_format = toc_heading_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_before = Pt(36)  # Add spacing before TOC heading
+    paragraph_format.space_after = Pt(42)  # Increase spacing after TOC heading
     
     # Create custom ChapterTitle style (instead of Heading 2)
-    if 'ChapterTitle' not in doc.styles:
-        chapter_title_style = doc.styles.add_style('ChapterTitle', 1)  # 1 = paragraph style
-        font = chapter_title_style.font
-        font.name = 'Georgia'
-        font.size = Pt(12)
-        paragraph_format = chapter_title_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_after = Pt(42)
-        paragraph_format.keep_with_next = True
+    chapter_title_style = doc.styles.add_style('ChapterTitle', 1)  # 1 = paragraph style
+    font = chapter_title_style.font
+    font.name = 'Georgia'
+    font.size = Pt(12)
+    paragraph_format = chapter_title_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_after = Pt(42)
+    paragraph_format.keep_with_next = True
     
     # Create BookSubtitle style
-    if 'BookSubtitle' not in doc.styles:
-        subtitle_style = doc.styles.add_style('BookSubtitle', 1)  # 1 = paragraph style
-        font = subtitle_style.font
-        font.name = 'Georgia'
-        font.size = Pt(12)
-        paragraph_format = subtitle_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_after = Pt(36)
+    subtitle_style = doc.styles.add_style('BookSubtitle', 1)  # 1 = paragraph style
+    font = subtitle_style.font
+    font.name = 'Georgia'
+    font.size = Pt(12)
+    paragraph_format = subtitle_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_after = Pt(36)
     
     # Create TOC Entry style
-    if 'TOC Entry' not in doc.styles:
-        toc_style = doc.styles.add_style('TOC Entry', 1)  # 1 = paragraph style
-        font = toc_style.font
-        font.name = 'Book Antiqua'
-        font.size = Pt(10)
-        paragraph_format = toc_style.paragraph_format
-        paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
-        paragraph_format.line_spacing = 1.15
-        paragraph_format.space_after = Pt(6)
-        # Add paragraph indent
-        paragraph_format.first_line_indent = Inches(0.25)
-        
-        # Add tab stops
-        paragraph_format.tab_stops.add_tab_stop(Inches(0.81), WD_ALIGN_PARAGRAPH.LEFT)
-        paragraph_format.tab_stops.add_tab_stop(Inches(4.0), WD_ALIGN_PARAGRAPH.RIGHT, WD_TAB_LEADER.DOTS)
+    toc_style = doc.styles.add_style('TOC Entry', 1)  # 1 = paragraph style
+    font = toc_style.font
+    font.name = 'Book Antiqua'
+    font.size = Pt(10)
+    paragraph_format = toc_style.paragraph_format
+    paragraph_format.line_spacing_rule = WD_LINE_SPACING.MULTIPLE
+    paragraph_format.line_spacing = 1.15
+    paragraph_format.space_after = Pt(6)
+    # Add paragraph indent
+    paragraph_format.first_line_indent = Inches(0.25)
+    # Add tab stops
+    paragraph_format.tab_stops.add_tab_stop(Inches(0.81), WD_ALIGN_PARAGRAPH.LEFT)
+    paragraph_format.tab_stops.add_tab_stop(Inches(4.0), WD_ALIGN_PARAGRAPH.RIGHT, WD_TAB_LEADER.DOTS)
     
     # Create PageHeader style
-    if 'PageHeader' not in doc.styles:
-        header_style = doc.styles.add_style('PageHeader', 1)  # 1 = paragraph style
-        font = header_style.font
-        font.name = 'Book Antiqua'
-        font.size = Pt(9)
-        font.italic = True
-        paragraph_format = header_style.paragraph_format
-        # Add tab stop for page number
-        paragraph_format.tab_stops.add_tab_stop(Inches(4.25), WD_ALIGN_PARAGRAPH.RIGHT)
+    header_style = doc.styles.add_style('PageHeader', 1)  # 1 = paragraph style
+    font = header_style.font
+    font.name = 'Book Antiqua'
+    font.size = Pt(9)
+    font.italic = True
+    paragraph_format = header_style.paragraph_format
+    # Add tab stop for page number
+    paragraph_format.tab_stops.add_tab_stop(Inches(4.25), WD_ALIGN_PARAGRAPH.RIGHT)
         
     # Create DedicationTo style
-    if 'DedicationTo' not in doc.styles:
-        dedication_to_style = doc.styles.add_style('DedicationTo', 1)  # 1 = paragraph style
-        font = dedication_to_style.font
-        font.name = 'Georgia'
-        font.size = Pt(12)
-        font.bold = True
-        paragraph_format = dedication_to_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_after = Pt(20)
+    dedication_to_style = doc.styles.add_style('DedicationTo', 1)  # 1 = paragraph style
+    font = dedication_to_style.font
+    font.name = 'Georgia'
+    font.size = Pt(12)
+    font.bold = True
+    paragraph_format = dedication_to_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_after = Pt(20)
     
     # Create DedicationFrom style
-    if 'DedicationFrom' not in doc.styles:
-        dedication_from_style = doc.styles.add_style('DedicationFrom', 1)  # 1 = paragraph style
-        font = dedication_from_style.font
-        font.name = 'Georgia'
-        font.size = Pt(12)
-        font.italic = True
-        paragraph_format = dedication_from_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_after = Pt(20)
+    dedication_from_style = doc.styles.add_style('DedicationFrom', 1)  # 1 = paragraph style
+    font = dedication_from_style.font
+    font.name = 'Georgia'
+    font.size = Pt(12)
+    font.italic = True
+    paragraph_format = dedication_from_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_after = Pt(20)
     
     # Create DedicationCredits style
-    if 'DedicationCredits' not in doc.styles:
-        dedication_credits_style = doc.styles.add_style('DedicationCredits', 1)  # 1 = paragraph style
-        font = dedication_credits_style.font
-        font.name = 'Georgia'
-        font.size = Pt(12)
-        paragraph_format = dedication_credits_style.paragraph_format
-        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        paragraph_format.space_after = Pt(20)
+    dedication_credits_style = doc.styles.add_style('DedicationCredits', 1)  # 1 = paragraph style
+    font = dedication_credits_style.font
+    font.name = 'Georgia'
+    font.size = Pt(12)
+    paragraph_format = dedication_credits_style.paragraph_format
+    paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    paragraph_format.space_after = Pt(20)
+    
+    # Create Quote style for quoted text
+    quote_style = doc.styles.add_style('Quote', 1)  # 1 = paragraph style
+    quote_style.base_style = doc.styles['Normal']  # Base on Normal style
+    font = quote_style.font
+    font.italic = True
+    paragraph_format = quote_style.paragraph_format
+    paragraph_format.left_indent = Inches(0.25)
+    paragraph_format.right_indent = Inches(0.25)
+    paragraph_format.first_line_indent = Inches(0)
 
 
 def create_title_page(doc, book_data):
@@ -511,7 +501,7 @@ def setup_section_headers(section, chapter_title, center_vertical=False, hide_he
     """
     # Configure section margins and page size
     section.top_margin = Inches(1.0)
-    section.bottom_margin = Inches(1.0)
+    section.bottom_margin = Inches(0.75)
     section.left_margin = Inches(1.0)  # Inside margin when mirrored
     section.right_margin = Inches(0.75)  # Outside margin when mirrored
     section.header_distance = Inches(0.5)
@@ -656,9 +646,27 @@ def process_chapters(doc, chapters):
         chapter_title_para.add_run(chapter_title)
         
         # Process paragraphs
-        for paragraph_text in chapter['paragraphs']:
-            para = doc.add_paragraph(paragraph_text)
-            para.style = 'Normal'
+        for paragraph_item in chapter['paragraphs']:
+            # Check if paragraph is a string or an object
+            if isinstance(paragraph_item, str):
+                # Regular paragraph
+                para = doc.add_paragraph(paragraph_item)
+                para.style = 'Normal'
+            elif isinstance(paragraph_item, dict) and 'type' in paragraph_item and 'content' in paragraph_item:
+                # Special paragraph type
+                if paragraph_item['type'] == 'quote':
+                    # Quote paragraph
+                    para = doc.add_paragraph(paragraph_item['content'])
+                    para.style = 'Quote'
+                else:
+                    # Unknown type, default to normal
+                    print(f"Warning: Unexpected paragraph type: {paragraph_item['type']}")
+                    para = doc.add_paragraph(paragraph_item['content'])
+                    para.style = 'Normal'
+            else:
+                # Fallback for unexpected format
+                print(f"Warning: Unexpected paragraph format: {paragraph_item}")
+                continue
 
 
 def process_document(input_file, output_file):

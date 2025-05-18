@@ -26,6 +26,10 @@ This document describes the JSON format designed to store the content of "Only a
         "John, saddle my horse, and bring him around to the door.",
         "The speaker was a boy of fifteen, handsomely dressed, and, to judge from his air and tone, a person of considerable consequence, in his own opinion, at least. The person addressed was employed in the stable of his father, Colonel Anthony Preston, and so inferior in social condition that Master Godfrey always addressed him in imperious tones.",
         "John looked up and answered, respectfully:",
+        {
+          "type": "quote",
+          "content": "MR. STONE: Sir—My son Godfrey complains that you have punished him severely for a very trifling fault. I wish to say that I consider your course very unreasonable and tyrannical, and desire you to understand that my son is not to be treated in such a manner."
+        },
         // Additional paragraphs...
       ]
     },
@@ -61,6 +65,12 @@ This document describes the JSON format designed to store the content of "Only a
      - `paragraphs`: An array of strings, each representing a paragraph of text
 
 4. **Paragraphs**
-   - Each paragraph is stored as a plain text string
+   - Each paragraph can be either:
+     - A plain text string (for regular paragraphs)
+     - An object with the following properties:
+       - `type`: The type of paragraph (e.g., "quote")
+       - `content`: The text content of the paragraph
    - All HTML formatting is removed
    - Original paragraph breaks are preserved
+   - Special paragraph types:
+     - `quote`: Used for quoted text, letters, or other content requiring double indentation
