@@ -166,6 +166,38 @@ def configure_styles(doc):
         paragraph_format = header_style.paragraph_format
         # Add tab stop for page number
         paragraph_format.tab_stops.add_tab_stop(Inches(4.25), WD_ALIGN_PARAGRAPH.RIGHT)
+        
+    # Create DedicationTo style
+    if 'DedicationTo' not in doc.styles:
+        dedication_to_style = doc.styles.add_style('DedicationTo', 1)  # 1 = paragraph style
+        font = dedication_to_style.font
+        font.name = 'Georgia'
+        font.size = Pt(12)
+        font.bold = True
+        paragraph_format = dedication_to_style.paragraph_format
+        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph_format.space_after = Pt(20)
+    
+    # Create DedicationFrom style
+    if 'DedicationFrom' not in doc.styles:
+        dedication_from_style = doc.styles.add_style('DedicationFrom', 1)  # 1 = paragraph style
+        font = dedication_from_style.font
+        font.name = 'Georgia'
+        font.size = Pt(12)
+        font.italic = True
+        paragraph_format = dedication_from_style.paragraph_format
+        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph_format.space_after = Pt(20)
+    
+    # Create DedicationCredits style
+    if 'DedicationCredits' not in doc.styles:
+        dedication_credits_style = doc.styles.add_style('DedicationCredits', 1)  # 1 = paragraph style
+        font = dedication_credits_style.font
+        font.name = 'Georgia'
+        font.size = Pt(12)
+        paragraph_format = dedication_credits_style.paragraph_format
+        paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        paragraph_format.space_after = Pt(20)
 
 
 def create_title_page(doc, book_data):
@@ -199,11 +231,48 @@ def create_title_page(doc, book_data):
         author_paragraph.style = 'BookSubtitle'
         author_paragraph.add_run(book_data['author'])
     
-    # Add section break for TOC (odd page break ensures TOC starts on a recto page)
+
+def create_dedication_page(doc, dedication_data):
+    """
+    Create the dedication page with proper formatting.
+    
+    Args:
+        doc: docx Document object
+        dedication_data: Dictionary containing dedication information
+    """
+    # Skip if no dedication data
+    if not dedication_data:
+        return
+    
+    # Create section for dedication page (odd page break ensures it starts on a recto page)
     section = doc.add_section(WD_SECTION.ODD_PAGE)
     
-    # Setup TOC section with hidden headers
-    setup_section_headers(section, "TABLE OF CONTENTS", hide_headers=True, reset_numbering=False)
+    # Setup dedication section with centered vertical alignment and hidden headers
+    setup_section_headers(section, "", center_vertical=True, hide_headers=True, reset_numbering=False)
+    
+    # Add "To" line if present
+    if 'to' in dedication_data and dedication_data['to']:
+        to_paragraph = doc.add_paragraph()
+        to_paragraph.style = 'DedicationTo'
+        to_paragraph.add_run(dedication_data['to'])
+    
+    # Add "From" line if present
+    if 'from' in dedication_data and dedication_data['from']:
+        from_paragraph = doc.add_paragraph()
+        from_paragraph.style = 'DedicationFrom'
+        from_paragraph.add_run(dedication_data['from'])
+    
+    # Add credits if present
+    if 'credits' in dedication_data and dedication_data['credits']:
+        # Add a blank paragraph with additinal spacing before credits
+        blank_paragraph = doc.add_paragraph()
+        blank_paragraph.style = 'DedicationFrom'
+        
+        # Add each credit
+        for credit in dedication_data['credits']:
+            credit_paragraph = doc.add_paragraph()
+            credit_paragraph.style = 'DedicationCredits'
+            credit_paragraph.add_run(credit)
 
 
 def to_title_case(text):
@@ -367,6 +436,12 @@ def create_table_of_contents(doc, chapters):
         doc: docx Document object
         chapters: List of chapter dictionaries
     """
+    # Create section for TOC (odd page break ensures TOC starts on a recto page)
+    section = doc.add_section(WD_SECTION.ODD_PAGE)
+    
+    # Setup TOC section with hidden headers
+    setup_section_headers(section, "TABLE OF CONTENTS", hide_headers=True, reset_numbering=False)
+
     # Add TOC heading with dedicated style
     toc_heading = doc.add_paragraph("TABLE OF CONTENTS")
     toc_heading.style = 'TOCHeading'
@@ -605,6 +680,10 @@ def process_document(input_file, output_file):
     
     # Create title page
     create_title_page(doc, data['book'])
+    
+    # Create dedication page if present
+    if 'dedication' in data:
+        create_dedication_page(doc, data['dedication'])
     
     # Create table of contents
     create_table_of_contents(doc, data['chapters'])

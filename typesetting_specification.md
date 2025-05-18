@@ -17,10 +17,11 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 
 ### Section Formatting
 - **Chapters**: Each chapter starts on a new recto (right-hand) page
+- **Dedication**: Follows the title page on a recto (right-hand) page
 - **Blank Pages**: Insert blank verso pages to enforce recto starts (the left page before a new chapter should be blank)
 - **Section Breaks**: Use section breaks between chapters to change header text
 - **Different Odd and Even Headers**: Enabled
-- **Different First Page**: Enabled (title and chapter first pages have no header)
+- **Different First Page**: Enabled (title, dedication, and chapter first pages have no header)
 
 ---
 
@@ -39,6 +40,31 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 - **Font**: Georgia, 12 pt, Italic
 - **Alignment**: Centered
 - **Spacing After**: 36 pt
+
+---
+
+### Dedication Page
+
+#### `DedicationTo` (custom)
+- **Use**: "To" line in dedication
+- **Font**: Georgia, 12 pt, Bold
+- **Alignment**: Centered
+- **Spacing After**: 20 pt
+- **Vertical Alignment**: Centered on page
+
+#### `DedicationFrom` (custom)
+- **Use**: "From" line in dedication
+- **Font**: Georgia, 12 pt, Italic
+- **Alignment**: Centered
+- **Spacing After**: 20 pt
+
+#### `DedicationCredits` (custom)
+- **Use**: Credits in dedication
+- **Font**: Georgia, 12 pt
+- **Alignment**: Centered
+- **Spacing After**: 20 pt
+
+**Note**: A blank paragraph with DedicationFrom style is inserted before credits to provide additional spacing.
 
 ---
 

@@ -11,6 +11,13 @@ This document describes the JSON format designed to store the content of "Only a
     "subtitle": "Or, Andy Burke's Fortunes",
     "author": "Horatio Alger, Jr."
   },
+  "dedication": {
+    "to": "John Doe",
+    "from": "Jane Doe",
+    "credits": [
+      "Cover art by Jack Doe"
+    ]
+  },
   "chapters": [
     {
       "number": 1,
@@ -42,13 +49,18 @@ This document describes the JSON format designed to store the content of "Only a
    - `subtitle`: The subtitle of the book
    - `author`: The author's name
 
-2. **Chapters Array**
+2. **Dedication** (optional)
+   - `to`: The person to whom the book is dedicated (optional)
+   - `from`: The person dedicating the book (optional)
+   - `credits`: An array of strings for additional credits (optional)
+
+3. **Chapters Array**
    - Each chapter is an object containing:
      - `number`: The chapter number (integer)
      - `title`: The chapter title (string)
      - `paragraphs`: An array of strings, each representing a paragraph of text
 
-3. **Paragraphs**
+4. **Paragraphs**
    - Each paragraph is stored as a plain text string
    - All HTML formatting is removed
    - Original paragraph breaks are preserved
