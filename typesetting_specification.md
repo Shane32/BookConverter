@@ -18,7 +18,10 @@ A complete style and layout reference for Microsoft Word typesetting of the nove
 ### Section Formatting
 - **Chapters**: Each chapter starts on a new recto (right-hand) page
 - **Dedication**: Follows the title page on a recto (right-hand) page
-- **Blank Pages**: Insert blank verso pages to enforce recto starts (the left page before a new chapter should be blank)
+- **Blank Pages**: Configurable via `FORCE_BLANK_VERSO_PAGES` flag in converter:
+  - When `True`: Force blank verso (left-hand/even) pages before each chapter begins on an odd page; if the prior chapter ends on an even page, there will be two blank pages before the new chapter
+  - When `False` (default): Allow chapters to end on an even page immediately preceding a new chapter (without forcing blank pages between them)
+  - Note: Chapters will still always start on odd (right-hand) pages regardless of this setting
 - **Section Breaks**: Use section breaks between chapters to change header text
 - **Different Odd and Even Headers**: Enabled
 - **Different First Page**: Enabled (title, dedication, and chapter first pages have no header)

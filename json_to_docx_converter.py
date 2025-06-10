@@ -31,6 +31,13 @@ from docx.oxml import OxmlElement, parse_xml
 from docx.oxml.ns import qn
 
 
+# Configuration options
+# Set to True to force blank verso (left-hand/even) pages before each chapter begins on an odd page; if the prior chapter ends on an even page, there will be two blank pages before the new chapter
+# Set to False to allow chapters to end on an even page immediately precending a new chapter (without forcing blank pages between them)
+# Note: Chapters will still always start on odd (right-hand) pages regardless of this setting
+FORCE_BLANK_VERSO_PAGES = False
+
+
 def create_style(doc, style_name, font_name, font_size, alignment=None,
                  space_before=None, space_after=None, first_line_indent=None, **kwargs):
     """
@@ -607,6 +614,9 @@ def process_chapters(doc, chapters):
     """
     Process each chapter with proper formatting and section breaks.
     
+    The behavior of blank verso pages before chapters is controlled by the
+    FORCE_BLANK_VERSO_PAGES configuration constant.
+    
     Args:
         doc: docx Document object
         chapters: List of chapter dictionaries
@@ -618,15 +628,17 @@ def process_chapters(doc, chapters):
         # Determine if this is the first page (for reset_numbering)
         first_page = (i == 0)
         
-        # Create section breaks before chapter content
-        # First add an even page section break (blank verso page)
-        section = doc.add_section(WD_SECTION.EVEN_PAGE)
+        # If configured to force blank verso pages, or if this is the first chapter, add an even page section break
+        if FORCE_BLANK_VERSO_PAGES or first_page:
+            # Create section breaks before chapter content
+            # First add an even page section break (blank verso page)
+            section = doc.add_section(WD_SECTION.EVEN_PAGE)
+            
+            # Setup headers for blank verso page
+            setup_section_headers(section, chapter_title,
+                                 hide_headers=first_page)
         
-        # Setup headers for blank verso page
-        setup_section_headers(section, chapter_title,
-                             hide_headers=first_page)
-        
-        # Then add an odd page section break for the chapter content
+        # Add an odd page section break for the chapter content
         section = doc.add_section(WD_SECTION.ODD_PAGE)
         
         # Setup headers for chapter content
